@@ -38,7 +38,7 @@ Setup & Usage:
 
 Clone or download the project files.
 
-Open index.html in any modern web browser.
+Open Final project.html in any modern web browser.
 
 -------------------------------------------------------------------
 credentials

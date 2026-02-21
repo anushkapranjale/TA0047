@@ -32,17 +32,30 @@ Select the document to verify.
 Enter the degree/certificate number.
 View student’s academic details or professional history.
 
+-------------------------------------------------------------------
+
 Setup & Usage:
 
 Clone or download the project files.
 
 Open index.html in any modern web browser.
 
-Enter an ABC ID from the demo database, e.g.:
+-------------------------------------------------------------------
+credentials
+-------------------------------------------------------------------
 
-ABC2024JH001 → Rahul Kumar Sharma
+Employer IDs and Password
+EMP-JH-2024-001 admin123
+EMP-JH-2024-002 tcs@2024
+EMP-JH-2024-003 hcl#portal
 
-ABC2024JH002 → Priya Singh
+ABC ID’s
+ABC2024JH001 <– rahul-Btech-UID/Rollno –> BIT/BTech/CS/2023/0045
+ABC2024JH001 <– rahul-Mtech-UID/Rollno –> NIT/MTech/IS/2025/0011
+BC2024JH002 <– Priya-Btech-UID/Rollno –> XLRI/BTech/CS/2024/0088
+ABC2024JH002 <– Priya-Mtech-UID/Rollno –> (designed to fail)
+
+-------------------------------------------------------------------
 
 Navigate through steps to view student academic & career info.
 

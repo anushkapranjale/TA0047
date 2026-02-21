@@ -55,5 +55,7 @@ Connect to a real database for live student data.
 Add email/SMS verification for real-world use.
 Export verification results as PDF or secure report.
 
+Screenshots are provided in the repo.
+
 License:
 This project is for educational and demo purposes only.

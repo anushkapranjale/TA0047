@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduTrust — Employer Sign In</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+
+  :root {
+    --bg:          #f5f6f8;
+    --white:       #ffffff;
+    --border:      #e2e5ea;
+    --border-dark: #c8cdd6;
+    --blue:        #1d4ed8;
+    --blue-light:  #eff4ff;
+    --blue-mid:    #dbeafe;
+    --green:       #16a34a;
+    --green-light: #f0fdf4;
+    --green-mid:   #bbf7d0;
+    --red:         #dc2626;
+    --red-light:   #fef2f2;
+    --red-mid:     #fecaca;
+    --text:        #111827;
+    --text-mid:    #374151;
+    --text-dim:    #6b7280;
+    --text-faint:  #9ca3af;
+    --sans:        'Instrument Sans', sans-serif;
+    --serif:       'Instrument Serif', serif;
+    --radius:      10px;
+    --shadow-sm:   0 1px 3px rgba(0,0,0,0.06);
+    --shadow-lg:   0 12px 40px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: var(--sans);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  /* ── Topbar ── */
+  .topbar {
+    width: 100%; max-width: 440px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.6rem;
+  }
+  .logo { display: flex; align-items: center; gap: 0.55rem; }
+  .logo-mark {
+    width: 34px; height: 34px; background: var(--blue);
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 18px; height: 18px; }
+  .logo-name { font-size: 1.05rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+  .logo-name span { color: var(--blue); }
+  .gov-tag {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.7rem; color: var(--text-dim);
+    background: var(--white); border: 1px solid var(--border);
+    padding: 0.3rem 0.75rem; border-radius: 100px; box-shadow: var(--shadow-sm);
+  }
+  .gov-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+
+  /* ── Card ── */
+  .card {
+    width: 100%; max-width: 440px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+
+  .card-top {
+    padding: 1.6rem 2rem; border-bottom: 1px solid var(--border);
+  }
+  .card-eyebrow {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--blue); margin-bottom: 0.4rem;
+  }
+  .card-title { font-family: var(--serif); font-size: 1.3rem; color: var(--text); margin-bottom: 0.2rem; }
+  .card-sub   { font-size: 0.78rem; color: var(--text-dim); }
+
+  /* ── Blue accent strip ── */
+  .accent-strip {
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue) 0%, #60a5fa 100%);
+  }
+
+  /* ── Info banner ── */
+  .info-banner {
+    margin: 1.6rem 2rem 0;
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    background: var(--blue-light); border: 1.5px solid var(--blue-mid);
+    border-radius: var(--radius); padding: 0.85rem 1rem;
+    font-size: 0.78rem; color: var(--text-mid); line-height: 1.5;
+  }
+  .info-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+  /* ── Card body ── */
+  .card-body { padding: 1.6rem 2rem 2rem; }
+
+  /* ── Form ── */
+  .field { margin-bottom: 1.1rem; }
+  label {
+    display: block; font-size: 0.72rem; font-weight: 600;
+    color: var(--text-mid); margin-bottom: 0.45rem;
+  }
+  .input-wrap { position: relative; }
+  .input-icon {
+    position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%);
+    font-size: 0.9rem; pointer-events: none;
+  }
+  input {
+    width: 100%; background: var(--white);
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: var(--sans); font-size: 0.9rem;
+    padding: 0.72rem 0.95rem 0.72rem 2.5rem; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
+  input.error { border-color: var(--red);  box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+  input::placeholder { color: var(--text-faint); font-size: 0.85rem; }
+
+  .pw-toggle {
+    position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    font-size: 0.8rem; color: var(--text-dim); padding: 0.2rem;
+    transition: color 0.15s;
+  }
+  .pw-toggle:hover { color: var(--text-mid); }
+
+  /* ── Remember + forgot row ── */
+  .row-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.3rem; margin-top: -0.3rem;
+  }
+  .remember {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.75rem; color: var(--text-dim); cursor: pointer;
+  }
+  .remember input[type=checkbox] {
+    width: 14px; height: 14px; padding: 0;
+    accent-color: var(--blue); cursor: pointer;
+  }
+  .forgot {
+    font-size: 0.75rem; color: var(--blue); font-weight: 500;
+    background: none; border: none; cursor: pointer;
+    font-family: var(--sans); text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .forgot:hover { opacity: 0.75; }
+
+  /* ── Buttons ── */
+  .btn {
+    width: 100%; padding: 0.78rem 1rem; border-radius: var(--radius);
+    font-family: var(--sans); font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: all 0.18s; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+  }
+  .btn-primary {
+    background: var(--blue); color: #fff;
+    box-shadow: 0 1px 3px rgba(29,78,216,0.3), 0 4px 12px rgba(29,78,216,0.15);
+  }
+  .btn-primary:hover:not(:disabled) { background: #1e40af; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* ── Divider ── */
+  .divider {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin: 1.2rem 0; font-size: 0.72rem; color: var(--text-faint);
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── Error alert ── */
+  .alert-error {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    background: var(--red-light); border: 1.5px solid var(--red-mid);
+    border-radius: var(--radius); padding: 0.75rem 0.9rem;
+    font-size: 0.78rem; color: var(--red); margin-bottom: 1rem;
+    animation: shake 0.35s cubic-bezier(0.36,0.07,0.19,0.97);
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 60%{transform:translateX(5px)} 80%{transform:translateX(-3px)}
+  }
+
+  /* ── Loading spinner ── */
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Success flash ── */
+  .success-flash {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.5rem; text-align: center;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .success-icon-wrap {
+    width: 56px; height: 56px; background: var(--green-mid);
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 1.6rem; margin-bottom: 0.5rem;
+  }
+  .success-title { font-family: var(--serif); font-size: 1.1rem; color: var(--text); }
+  .success-sub { font-size: 0.78rem; color: var(--text-dim); }
+
+  /* ── Trusted badge row ── */
+  .trust-row {
+    display: flex; align-items: center; justify-content: center; gap: 1.2rem;
+    margin-top: 0.9rem; flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 0.35rem;
+    font-size: 0.68rem; color: var(--text-faint);
+  }
+  .trust-item span { font-size: 0.8rem; }
+
+  .hidden { display: none !important; }
+
+  footer { margin-top: 1.4rem; font-size: 0.67rem; color: var(--text-faint); text-align: center; }
+
+  /* ══════════════════════════════════════════
+     VERIFICATION PORTAL (embedded, hidden by default)
+  ══════════════════════════════════════════ */
+  #portalWrap { display: none; flex-direction: column; align-items: center; width: 100%; }
+
+  /* ── Portal topbar ── */
+  .portal-topbar {
+    width: 100%; max-width: 540px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.6rem;
+  }
+  .employer-badge {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--white); border: 1px solid var(--border);
+    padding: 0.3rem 0.6rem 0.3rem 0.5rem; border-radius: 100px;
+    box-shadow: var(--shadow-sm);
+  }
+  .employer-avatar {
+    width: 22px; height: 22px; background: var(--blue); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .employer-name { font-size: 0.72rem; font-weight: 600; color: var(--text-mid); }
+  .btn-signout {
+    background: none; border: 1px solid var(--border);
+    border-radius: 100px; padding: 0.22rem 0.7rem;
+    font-size: 0.68rem; font-weight: 500; color: var(--text-dim);
+    cursor: pointer; font-family: var(--sans); transition: all 0.15s;
+    margin-left: 0.4rem;
+  }
+  .btn-signout:hover { border-color: var(--red); color: var(--red); }
+
+  /* All the rest of the portal card lives below as-is */
+  .portal-card {
+    width: 100%; max-width: 540px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .portal-card .card-top {
+    padding: 1.6rem 2rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  }
+  .portal-card .card-title { font-family: var(--serif); font-size: 1.25rem; color: var(--text); margin-bottom: 0.25rem; }
+  .portal-card .card-sub   { font-size: 0.78rem; color: var(--text-dim); }
+  .step-badge {
+    background: var(--blue-light); color: var(--blue);
+    font-size: 0.68rem; font-weight: 600;
+    padding: 0.3rem 0.7rem; border-radius: 100px;
+    border: 1px solid var(--blue-mid); white-space: nowrap; flex-shrink: 0;
+  }
+  .progress-track { height: 3px; background: var(--border); }
+  .progress-fill {
+    height: 100%; background: var(--blue);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    width: 33%;
+  }
+  .steps {
+    display: flex; padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border); background: #fafbfc;
+  }
+  .step { display: flex; align-items: center; flex: 1; }
+  .step-inner { display: flex; align-items: center; gap: 0.45rem; }
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    font-size: 0.62rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.3s;
+    border: 1.5px solid var(--border-dark); color: var(--text-faint); background: var(--white);
+  }
+  .step-label { font-size: 0.7rem; font-weight: 500; color: var(--text-faint); transition: color 0.3s; }
+  .step-connector { flex: 1; height: 1px; background: var(--border); margin: 0 0.5rem; }
+  .step.active .step-num   { background: var(--blue);  border-color: var(--blue);  color: #fff; }
+  .step.active .step-label { color: var(--blue); font-weight: 600; }
+  .step.done   .step-num   { background: var(--green); border-color: var(--green); color: #fff; }
+  .step.done   .step-label { color: var(--green); }
+  .portal-card .card-body { padding: 2rem; }
+
+  /* Form & inputs (inherit from above) */
+  .field { margin-bottom: 1.1rem; }
+  .portal-card label {
+    display: block; font-size: 0.72rem; font-weight: 600;
+    color: var(--text-mid); margin-bottom: 0.45rem;
+  }
+  .portal-card input {
+    width: 100%; background: var(--white);
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: var(--sans); font-size: 0.9rem;
+    padding: 0.72rem 0.95rem; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .portal-card input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,78,216,0.1); }
+  .portal-card input.error { border-color: var(--red);  box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+  .portal-card input::placeholder { color: var(--text-faint); font-size: 0.85rem; }
+  .helper { font-size: 0.72rem; color: var(--text-dim); margin-top: 0.35rem; }
+  .btn-primary-p {
+    width: 100%; padding: 0.78rem 1rem; border-radius: var(--radius);
+    font-family: var(--sans); font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: all 0.18s; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+    background: var(--blue); color: #fff;
+    box-shadow: 0 1px 3px rgba(29,78,216,0.3), 0 4px 12px rgba(29,78,216,0.15);
+    margin-top: 0.5rem;
+  }
+  .btn-primary-p:hover { background: #1e40af; transform: translateY(-1px); }
+  .btn-ghost-p {
+    width: 100%; padding: 0.78rem 1rem; border-radius: var(--radius);
+    font-family: var(--sans); font-size: 0.82rem; font-weight: 500;
+    cursor: pointer; transition: all 0.18s;
+    background: transparent; color: var(--text-dim);
+    border: 1.5px solid var(--border); margin-top: 0.65rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-ghost-p:hover { border-color: var(--border-dark); color: var(--text-mid); background: var(--bg); }
+  .identity-pill {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    background: var(--green-light); border: 1.5px solid var(--green-mid);
+    border-radius: var(--radius); margin-bottom: 1.4rem;
+  }
+  .id-avatar {
+    width: 36px; height: 36px; background: var(--green); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+  }
+  .id-name { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .id-code { font-size: 0.7rem; color: var(--green); margin-top: 0.1rem; font-weight: 500; }
+  .id-verified {
+    margin-left: auto; background: var(--green); color: #fff;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em;
+    padding: 0.25rem 0.6rem; border-radius: 100px; text-transform: uppercase; flex-shrink: 0;
+  }
+  .tabs {
+    display: flex; border: 1.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 1.4rem;
+  }
+  .tab {
+    flex: 1; padding: 0.68rem 0.5rem;
+    font-size: 0.82rem; font-weight: 600; color: var(--text-dim);
+    background: var(--bg); cursor: pointer; transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    border: none; font-family: var(--sans);
+  }
+  .tab:first-child { border-right: 1.5px solid var(--border); }
+  .tab.active { background: var(--white); color: var(--blue); box-shadow: inset 0 -2px 0 var(--blue); }
+  .tab:hover:not(.active) { background: var(--white); color: var(--text-mid); }
+  .section-label {
+    font-size: 0.72rem; font-weight: 600; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem;
+  }
+  .doc-options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .doc-option {
+    padding: 1rem 1.1rem; border: 1.5px solid var(--border);
+    border-radius: var(--radius); cursor: pointer; transition: all 0.18s;
+    display: flex; align-items: center; gap: 0.9rem; background: var(--white);
+  }
+  .doc-option:hover { border-color: var(--border-dark); background: var(--bg); }
+  .doc-option.selected { border-color: var(--blue); background: var(--blue-light); }
+  .doc-icon {
+    width: 38px; height: 38px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+    border: 1px solid var(--border); background: var(--white);
+  }
+  .doc-option.selected .doc-icon { border-color: var(--blue-mid); background: var(--blue-mid); }
+  .doc-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .doc-dept  { font-size: 0.71rem; color: var(--text-dim); margin-top: 0.1rem; }
+  .doc-option.selected .doc-title { color: var(--blue); }
+  .doc-radio {
+    margin-left: auto; width: 17px; height: 17px; border-radius: 50%;
+    border: 1.5px solid var(--border-dark); flex-shrink: 0;
+    position: relative; transition: all 0.18s; background: var(--white);
+  }
+  .doc-option.selected .doc-radio { border-color: var(--blue); background: var(--blue); }
+  .doc-option.selected .doc-radio::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%); width: 5px; height: 5px;
+    border-radius: 50%; background: #fff;
+  }
+  .career-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem;
+  }
+  .career-total {
+    font-size: 0.72rem; color: var(--text-dim);
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 0.25rem 0.65rem; border-radius: 100px;
+  }
+  .career-total span { font-weight: 700; color: var(--blue); }
+  .timeline { display: flex; flex-direction: column; }
+  .timeline-item { display: flex; gap: 0.9rem; position: relative; padding-bottom: 1.1rem; }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 22px; position: relative; }
+  .timeline-item:not(:last-child) .tl-left::after {
+    content: ''; position: absolute; left: 50%; top: 22px;
+    transform: translateX(-50%); width: 2px; bottom: 0;
+    background: linear-gradient(to bottom, var(--border-dark), var(--border));
+  }
+  .tl-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; flex-shrink: 0; z-index: 1;
+    border: 2px solid; transition: all 0.2s;
+  }
+  .tl-dot.current { background: var(--green-light); border-color: var(--green); }
+  .tl-dot.past    { background: var(--bg); border-color: var(--border-dark); }
+  .tl-right { flex: 1; min-width: 0; }
+  .job-card {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 1rem 1.1rem;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .job-card:hover { border-color: var(--border-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .job-card.current-job { border-color: var(--green-mid); background: var(--green-light); }
+  .job-row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.15rem; }
+  .job-company { font-size: 0.9rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .job-card.current-job .job-company { color: var(--green); }
+  .job-status-badge { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.18rem 0.55rem; border-radius: 100px; flex-shrink: 0; }
+  .badge-current  { background: var(--green-mid); color: var(--green); }
+  .badge-verified { background: var(--blue-mid);  color: var(--blue); }
+  .job-designation { font-size: 0.82rem; font-weight: 500; color: var(--text-mid); margin-bottom: 0.6rem; }
+  .job-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chip { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.71rem; color: var(--text-dim); font-weight: 500; background: var(--bg); border: 1px solid var(--border); padding: 0.22rem 0.6rem; border-radius: 100px; }
+  .chip-icon { font-size: 0.72rem; line-height: 1; }
+  .job-card.current-job .chip { background: rgba(255,255,255,0.6); }
+  .career-summary { margin-top: 1.1rem; display: flex; gap: 0; overflow: hidden; border: 1.5px solid var(--border); border-radius: var(--radius); background: var(--white); }
+  .sum-stat { flex: 1; padding: 0.75rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; border-right: 1px solid var(--border); }
+  .sum-stat:last-child { border-right: none; }
+  .sum-val { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+  .sum-lbl { font-size: 0.63rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .result-box { border-radius: var(--radius); padding: 1.5rem; animation: slideUp 0.3s cubic-bezier(0.34,1.2,0.64,1); text-align: center; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .result-box.valid   { background: var(--green-light); border: 1.5px solid var(--green-mid); }
+  .result-box.invalid { background: var(--red-light);   border: 1.5px solid var(--red-mid); }
+  .result-icon-wrap { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 1rem; }
+  .result-box.valid   .result-icon-wrap { background: var(--green-mid); }
+  .result-box.invalid .result-icon-wrap { background: var(--red-mid); }
+  .result-status { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.3rem; }
+  .result-box.valid   .result-status { color: var(--green); }
+  .result-box.invalid .result-status { color: var(--red); }
+  .result-title { font-family: var(--serif); font-size: 1.15rem; color: var(--text); margin-bottom: 0.6rem; }
+  .result-details { text-align: left; background: rgba(255,255,255,0.7); border-radius: 8px; padding: 0.7rem 1rem; font-size: 0.78rem; color: var(--text-mid); line-height: 1.6; width: 100%; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     SIGN-IN PAGE
+═══════════════════════════════════════════════════ -->
+<div id="signinWrap" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18" fill="none"><path d="M9 1L11.5 6.5H17L12.5 10L14.5 16L9 12.5L3.5 16L5.5 10L1 6.5H6.5L9 1Z" fill="white" fill-opacity="0.9"/></svg>
+      </div>
+      <div class="logo-name">Edu<span>Trust</span></div>
+    </div>
+    <div class="gov-tag"><div class="gov-dot"></div>Jharkhand · Employer Portal</div>
+  </div>
+
+  <div class="card">
+    <div class="card-top">
+      <div class="card-eyebrow">Employer Access</div>
+      <div class="card-title">Sign in to EduTrust</div>
+      <div class="card-sub">Verify academic credentials &amp; professional history of candidates</div>
+    </div>
+    <div class="accent-strip"></div>
+
+    <div class="card-body">
+
+      <!-- Info banner -->
+      <div class="info-banner">
+        <div class="info-icon">ℹ️</div>
+        <div>Use your registered <strong>Employer ID</strong> and password. Contact your HR admin if you don't have credentials.</div>
+      </div>
+
+      <!-- Error alert (hidden by default) -->
+      <div id="loginError" class="alert-error hidden" style="margin-top:1.2rem">
+        <span>🚫</span>
+        <span id="loginErrorMsg">Invalid Employer ID or password. Please try again.</span>
+      </div>
+
+      <!-- Success state (hidden) -->
+      <div id="loginSuccess" class="success-flash hidden" style="margin-top:1.5rem; padding-bottom:0.5rem">
+        <div class="success-icon-wrap">✅</div>
+        <div class="success-title">Signed in successfully</div>
+        <div class="success-sub">Redirecting to verification portal…</div>
+      </div>
+
+      <!-- Form -->
+      <div id="loginForm" style="margin-top:1.4rem">
+        <div class="field">
+          <label for="empID">Employer ID</label>
+          <div class="input-wrap">
+            <span class="input-icon">🏢</span>
+            <input type="text" id="empID" placeholder="e.g. EMP-JH-2024-001" autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="empPass">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="empPass" placeholder="Enter your password" autocomplete="current-password" />
+            <button class="pw-toggle" id="pwToggle" onclick="togglePw()" type="button" title="Show/hide password">👁️</button>
+          </div>
+        </div>
+
+        <div class="row-meta">
+          <label class="remember">
+            <input type="checkbox" id="rememberMe" /> Remember me
+          </label>
+          <button class="forgot" onclick="forgotPassword()">Forgot password?</button>
+        </div>
+
+        <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">
+          Sign In &nbsp;→
+        </button>
+      </div>
+
+      <!-- Trust indicators -->
+      <div class="trust-row">
+        <div class="trust-item"><span>🔐</span> Secure login</div>
+        <div class="trust-item"><span>🏛️</span> Govt. registered</div>
+        <div class="trust-item"><span>🛡️</span> Data protected</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>EduTrust · Jharkhand Higher Education · Demo Build · No real data stored<br style="margin-bottom:0.2rem">
+    <span style="opacity:0.7">Demo credentials: &nbsp;<strong>EMP-JH-2024-001</strong> / <strong>admin123</strong></span>
+  </footer>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VERIFICATION PORTAL (shown after login)
+═══════════════════════════════════════════════════ -->
+<div id="portalWrap">
+
+  <div class="portal-topbar" style="max-width:540px; width:100%; margin-bottom:1.6rem; display:flex; align-items:center; justify-content:space-between;">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18" fill="none"><path d="M9 1L11.5 6.5H17L12.5 10L14.5 16L9 12.5L3.5 16L5.5 10L1 6.5H6.5L9 1Z" fill="white" fill-opacity="0.9"/></svg>
+      </div>
+      <div class="logo-name">Edu<span>Trust</span></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <div class="employer-badge">
+        <div class="employer-avatar" id="empAvatarBadge">—</div>
+        <div class="employer-name" id="empNameBadge">—</div>
+      </div>
+      <button class="btn-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="portal-card">
+    <div class="card-top">
+      <div>
+        <div class="card-title">Academic Credential Verification</div>
+        <div class="card-sub">Verify a student's degree or career history using their ABC Student ID</div>
+      </div>
+      <div class="step-badge" id="stepBadge">Step 1 of 3</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="steps">
+      <div class="step active" id="s1">
+        <div class="step-inner"><div class="step-num">1</div><div class="step-label">Identity</div></div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step" id="s2">
+        <div class="step-inner"><div class="step-num">2</div><div class="step-label">Verification</div></div>
+      </div>
+      <div class="step-connector"></div>
+      <div class="step" id="s3">
+        <div class="step-inner"><div class="step-num">3</div><div class="step-label">Result</div></div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- Panel 1 -->
+      <div id="panel1">
+        <div class="field">
+          <label>ABC Student ID</label>
+          <input type="text" id="abcInput" placeholder="e.g. ABC2024JH001" autocomplete="off" />
+          <div class="helper">Enter the ABC ID provided by the employee or candidate.</div>
+        </div>
+        <button class="btn-primary-p" onclick="lookupID()">Look Up Student &nbsp;→</button>
+      </div>
+
+      <!-- Panel 2 -->
+      <div id="panel2" class="hidden">
+        <div class="identity-pill">
+          <div class="id-avatar" id="idAvatar">—</div>
+          <div>
+            <div class="id-name" id="idName">—</div>
+            <div class="id-code" id="idCode">—</div>
+          </div>
+          <div class="id-verified">Verified</div>
+        </div>
+        <div class="tabs">
+          <button class="tab active" id="tabAcademic" onclick="switchTab('academic')">🎓 &nbsp;Academic</button>
+          <button class="tab" id="tabCareer" onclick="switchTab('career')">💼 &nbsp;Professional History</button>
+        </div>
+        <!-- Academic -->
+        <div id="tabContentAcademic">
+          <div class="section-label">Select document to verify</div>
+          <div class="doc-options" id="docOptions"></div>
+          <div id="degreeField" class="field hidden" style="margin-top:1.2rem">
+            <label>Degree / Certificate Number</label>
+            <input type="text" id="inpDegreeNo" placeholder="" autocomplete="off" />
+            <div class="helper">Enter the number exactly as it appears on the certificate.</div>
+          </div>
+          <button class="btn-primary-p" onclick="verifyDoc()">Verify Document &nbsp;🔍</button>
+          <button class="btn-ghost-p" onclick="resetPortal()">← Start over</button>
+        </div>
+        <!-- Career -->
+        <div id="tabContentCareer" class="hidden">
+          <div class="career-header">
+            <div class="section-label" style="margin-bottom:0">Employment Records</div>
+            <div class="career-total">Total: <span id="totalExp">—</span></div>
+          </div>
+          <div class="timeline" id="careerTimeline"></div>
+          <div class="career-summary" id="careerSummary"></div>
+          <button class="btn-ghost-p" style="margin-top:1rem" onclick="resetPortal()">← Start over</button>
+        </div>
+      </div>
+
+      <!-- Panel 3 -->
+      <div id="panel3" class="hidden">
+        <div class="result-box" id="resultBox">
+          <div class="result-icon-wrap" id="rIcon"></div>
+          <div class="result-status" id="rStatus"></div>
+          <div class="result-title"   id="rTitle"></div>
+          <div class="result-details" id="rDetails"></div>
+        </div>
+        <button class="btn-ghost-p" style="margin-top:1rem" onclick="resetPortal()">← Verify another</button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer style="margin-top:1.4rem; font-size:0.67rem; color:var(--text-faint); text-align:center;">
+    EduTrust · Jharkhand Higher Education · Demo Build · No real data stored
+  </footer>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  EMPLOYER ACCOUNTS (demo)
+// ══════════════════════════════════════════════
+const EMPLOYERS = {
+  "EMP-JH-2024-001": { password: "admin123", name: "Infosys HR — Jharkhand" },
+  "EMP-JH-2024-002": { password: "tcs@2024",  name: "TCS Recruitment Team" },
+  "EMP-JH-2024-003": { password: "hcl#portal", name: "HCL HR Division" }
+};
+
+let currentEmployer = null;
+let pwVisible = false;
+
+// ── Toggle password visibility ──
+function togglePw() {
+  const inp = document.getElementById('empPass');
+  pwVisible = !pwVisible;
+  inp.type = pwVisible ? 'text' : 'password';
+  document.getElementById('pwToggle').textContent = pwVisible ? '🙈' : '👁️';
+}
+
+// ── Forgot password placeholder ──
+function forgotPassword() {
+  alert('Please contact your HR administrator or EduTrust support at support@edutrust.jh.gov.in');
+}
+
+// ── Login ──
+function doLogin() {
+  const empID  = document.getElementById('empID').value.trim().toUpperCase();
+  const empPass = document.getElementById('empPass').value;
+  const btn    = document.getElementById('loginBtn');
+  const errEl  = document.getElementById('loginError');
+
+  errEl.classList.add('hidden');
+
+  if (!empID || !empPass) {
+    showLoginError('Please enter your Employer ID and password.');
+    return;
+  }
+
+  // Simulate loading
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Signing in…';
+
+  setTimeout(() => {
+    const account = EMPLOYERS[empID];
+    const valid   = account && account.password === empPass;
+
+    if (!valid) {
+      btn.disabled = false;
+      btn.innerHTML = 'Sign In &nbsp;→';
+      showLoginError('Invalid Employer ID or password. Please try again.');
+      document.getElementById('empID').classList.add('error');
+      document.getElementById('empPass').classList.add('error');
+      setTimeout(() => {
+        document.getElementById('empID').classList.remove('error');
+        document.getElementById('empPass').classList.remove('error');
+      }, 1800);
+      return;
+    }
+
+    // Success
+    currentEmployer = { id: empID, ...account };
+    document.getElementById('loginForm').classList.add('hidden');
+    document.querySelector('.info-banner').classList.add('hidden');
+    document.getElementById('loginSuccess').classList.remove('hidden');
+
+    setTimeout(() => {
+      document.getElementById('signinWrap').style.display = 'none';
+      const pw = document.getElementById('portalWrap');
+      pw.style.display = 'flex';
+      pw.style.flexDirection = 'column';
+      pw.style.alignItems = 'center';
+
+      // Set employer badge
+      const initials = currentEmployer.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      document.getElementById('empAvatarBadge').textContent = initials;
+      document.getElementById('empNameBadge').textContent   = currentEmployer.name;
+    }, 1400);
+  }, 900);
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  document.getElementById('loginErrorMsg').textContent = msg;
+  el.classList.remove('hidden');
+  // re-trigger animation
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = '';
+}
+
+// ── Sign out ──
+function signOut() {
+  currentEmployer = null;
+  document.getElementById('empID').value  = '';
+  document.getElementById('empPass').value = '';
+  document.getElementById('loginForm').classList.remove('hidden');
+  document.querySelector('.info-banner').classList.remove('hidden');
+  document.getElementById('loginSuccess').classList.add('hidden');
+  document.getElementById('loginError').classList.add('hidden');
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').innerHTML = 'Sign In &nbsp;→';
+  document.getElementById('portalWrap').style.display = 'none';
+  document.getElementById('signinWrap').style.display = 'flex';
+  resetPortal();
+}
+
+// Enter key on sign-in
+document.getElementById('empID').addEventListener('keydown',   e => { if(e.key==='Enter') document.getElementById('empPass').focus(); });
+document.getElementById('empPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════════════════════
+//  VERIFICATION PORTAL DB
+// ══════════════════════════════════════════════
+const DB = {
+  "ABC2024JH001": {
+    name: "Rahul Kumar Sharma",
+    docs: [
+      { id:"btech", label:"B.Tech Computer Science", dept:"Dept. of Computer Science & Engineering", icon:"🖥️", valid_degree:"BIT/BTech/CS/2023/0045", placeholder:"e.g. BIT/BTech/CS/2023/0045", detail_valid:"Issued: May 2023 · BIT Mesra, Ranchi<br>CGPA: 8.7 / 10" },
+      { id:"mtech", label:"M.Tech Cyber Security",   dept:"Dept. of Information Security",            icon:"🔐", valid_degree:"NIT/MTech/IS/2025/0011", placeholder:"e.g. NIT/MTech/IS/2025/0011", detail_valid:"Issued: Jun 2025 · NIT Jamshedpur<br>Grade: A+" }
+    ],
+    career: {
+      total_exp: "3 yrs 4 mos",
+      jobs: [
+        { company:"Infosys Limited",           designation:"Senior Systems Engineer", location:"Pune, Maharashtra",      duration:"Mar 2024 – Present",   current:true  },
+        { company:"Tata Consultancy Services", designation:"Systems Engineer",        location:"Hyderabad, Telangana",   duration:"Jul 2023 – Feb 2024",  current:false },
+        { company:"Wipro Technologies",        designation:"Project Engineer",        location:"Bengaluru, Karnataka",   duration:"Jan 2023 – Jun 2023",  current:false }
+      ],
+      stats: { companies:"3", experience:"3+ yrs", current:"Infosys" }
+    }
+  },
+  "ABC2024JH002": {
+    name: "Priya Singh",
+    docs: [
+      { id:"btech", label:"B.Tech Computer Science", dept:"Dept. of Computer Science & Engineering", icon:"🖥️", valid_degree:"XLRI/BTech/CS/2024/0088", placeholder:"e.g. XLRI/BTech/CS/2024/0088", detail_valid:"Issued: May 2024 · XLRI Jamshedpur<br>CGPA: 9.1 / 10" },
+      { id:"mtech", label:"M.Tech Cyber Security",   dept:"Dept. of Information Security",           icon:"🔐", valid_degree:null,                       placeholder:"Enter degree number",         detail_valid:null }
+    ],
+    career: {
+      total_exp: "1 yr 2 mos",
+      jobs: [
+        { company:"HCL Technologies",  designation:"Graduate Engineer Trainee",  location:"Noida, Uttar Pradesh",   duration:"Aug 2024 – Present",  current:true  },
+        { company:"Capgemini India",   designation:"Security Analyst Intern",    location:"Mumbai, Maharashtra",    duration:"Jan 2024 – Jun 2024", current:false }
+      ],
+      stats: { companies:"2", experience:"1+ yr", current:"HCL Technologies" }
+    }
+  }
+};
+
+let user = null, doc = null;
+function initials(n){ return n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function setStep(n){
+  const w=['33%','66%','100%'];
+  document.getElementById('progressFill').style.width=w[n-1];
+  document.getElementById('stepBadge').textContent=`Step ${n} of 3`;
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById('s'+i);
+    el.classList.remove('active','done');
+    if(i<n)el.classList.add('done');
+    if(i===n)el.classList.add('active');
+  }
+}
+
+function showPanel(n){ [1,2,3].forEach(i=>document.getElementById('panel'+i).classList.toggle('hidden',i!==n)); }
+
+function lookupID(){
+  const raw=document.getElementById('abcInput').value.trim().toUpperCase();
+  const data=DB[raw];
+  if(!data){
+    const inp=document.getElementById('abcInput');
+    inp.classList.add('error'); inp.value=''; inp.placeholder='ABC ID not found — try again';
+    setTimeout(()=>{inp.classList.remove('error');inp.placeholder='e.g. ABC2024JH001';},2500);
+    return;
+  }
+  user={id:raw,...data}; doc=null;
+  document.getElementById('idAvatar').textContent=initials(user.name);
+  document.getElementById('idName').textContent=user.name;
+  document.getElementById('idCode').textContent='ABC ID: '+raw;
+  buildDocs(); buildCareer(); switchTab('academic'); showPanel(2); setStep(2);
+}
+
+function buildDocs(){
+  doc=null;
+  document.getElementById('degreeField').classList.add('hidden');
+  document.getElementById('inpDegreeNo').value='';
+  const container=document.getElementById('docOptions'); container.innerHTML='';
+  user.docs.forEach(d=>{
+    const el=document.createElement('div'); el.className='doc-option';
+    el.innerHTML=`<div class="doc-icon">${d.icon}</div><div><div class="doc-title">${d.label}</div><div class="doc-dept">${d.dept}</div></div><div class="doc-radio"></div>`;
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('.doc-option').forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected'); doc=d;
+      const inp=document.getElementById('inpDegreeNo');
+      document.getElementById('degreeField').classList.remove('hidden');
+      inp.value=''; inp.placeholder=d.placeholder; inp.focus();
+    });
+    container.appendChild(el);
+  });
+}
+
+function buildCareer(){
+  const c=user.career;
+  document.getElementById('totalExp').textContent=c.total_exp;
+  const tl=document.getElementById('careerTimeline'); tl.innerHTML='';
+  c.jobs.forEach(job=>{
+    const item=document.createElement('div'); item.className='timeline-item';
+    item.innerHTML=`<div class="tl-left"><div class="tl-dot ${job.current?'current':'past'}">${job.current?'●':'○'}</div></div><div class="tl-right"><div class="job-card ${job.current?'current-job':''}"><div class="job-row-top"><div class="job-company">${job.company}</div><div class="job-status-badge ${job.current?'badge-current':'badge-verified'}">${job.current?'Current':'Verified'}</div></div><div class="job-designation">${job.designation}</div><div class="job-chips"><div class="chip"><span class="chip-icon">📅</span>${job.duration}</div><div class="chip"><span class="chip-icon">📍</span>${job.location}</div></div></div></div>`;
+    tl.appendChild(item);
+  });
+  const s=c.stats;
+  document.getElementById('careerSummary').innerHTML=`<div class="sum-stat"><div class="sum-val">${s.companies}</div><div class="sum-lbl">Companies</div></div><div class="sum-stat"><div class="sum-val">${s.experience}</div><div class="sum-lbl">Experience</div></div><div class="sum-stat" style="flex:2"><div class="sum-val" style="font-size:0.82rem;color:var(--green)">${s.current}</div><div class="sum-lbl">Currently at</div></div>`;
+}
+
+function switchTab(tab){
+  document.getElementById('tabAcademic').classList.toggle('active',tab==='academic');
+  document.getElementById('tabCareer').classList.toggle('active',tab==='career');
+  document.getElementById('tabContentAcademic').classList.toggle('hidden',tab!=='academic');
+  document.getElementById('tabContentCareer').classList.toggle('hidden',tab!=='career');
+  if(tab==='career')setStep(2);
+}
+
+function verifyDoc(){
+  if(!doc){
+    document.querySelectorAll('.doc-option').forEach(el=>{el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',1500);});
+    return;
+  }
+  const degNo=document.getElementById('inpDegreeNo').value.trim();
+  if(!degNo){const inp=document.getElementById('inpDegreeNo');inp.classList.add('error');setTimeout(()=>inp.classList.remove('error'),1800);return;}
+  const exists=doc.valid_degree!==null;
+  const ok=exists&&degNo.toUpperCase()===doc.valid_degree.toUpperCase();
+  const box=document.getElementById('resultBox');
+  box.className='result-box '+(ok?'valid':'invalid');
+  document.getElementById('rIcon').textContent=ok?'✅':'❌';
+  document.getElementById('rStatus').textContent=ok?'Document Verified':'Verification Failed';
+  document.getElementById('rTitle').textContent=doc.label+' — '+user.name;
+  document.getElementById('rDetails').innerHTML=ok
+    ?`<strong>Status:</strong> Authentic record found in EduTrust registry<br>${doc.detail_valid}<br>Degree No: <strong>${degNo}</strong>`
+    :!exists
+      ?`<strong>Status:</strong> This document does not exist in the registry.<br>No record of this degree was found for this student.`
+      :`<strong>Status:</strong> Degree number did not match our records.<br>Please check the certificate number and try again.`;
+  showPanel(3); setStep(3);
+}
+
+function resetPortal(){
+  user=doc=null;
+  document.getElementById('abcInput').value='';
+  showPanel(1); setStep(1);
+}
+
+document.getElementById('abcInput').addEventListener('keydown',e=>{if(e.key==='Enter')lookupID();});
+document.getElementById('inpDegreeNo').addEventListener('keydown',e=>{if(e.key==='Enter')verifyDoc();});
+</script>
+</body>
+</html>

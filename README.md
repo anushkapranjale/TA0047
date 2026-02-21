@@ -50,10 +50,10 @@ EMP-JH-2024-002 tcs@2024
 EMP-JH-2024-003 hcl#portal
 
 ABC ID’s
-ABC2024JH001 <– rahul-Btech-UID/Rollno –> BIT/BTech/CS/2023/0045
-ABC2024JH001 <– rahul-Mtech-UID/Rollno –> NIT/MTech/IS/2025/0011
-BC2024JH002 <– Priya-Btech-UID/Rollno –> XLRI/BTech/CS/2024/0088
-ABC2024JH002 <– Priya-Mtech-UID/Rollno –> (designed to fail)
+ABC2024JH001 –> BIT/BTech/CS/2023/0045 (for Btech)
+ABC2024JH001 –> NIT/MTech/IS/2025/0011 (for Mtech)
+BC2024JH002  –> XLRI/BTech/CS/2024/0088 (For Btech)
+ABC2024JH002 –> (designed to fail)
 
 -------------------------------------------------------------------
 

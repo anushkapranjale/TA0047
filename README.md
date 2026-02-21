@@ -51,6 +51,9 @@ EMP-JH-2024-003 hcl#portal
 
 ABC ID’s
 
+ex:-
+ - "ABC ID" -> "the course ID"
+
 -ABC2024JH001 –> BIT/BTech/CS/2023/0045 (for Btech)
 
 -ABC2024JH001 –> NIT/MTech/IS/2025/0011 (for Mtech)

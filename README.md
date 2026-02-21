@@ -54,13 +54,13 @@ ABC ID’s
 ex:-
  - "ABC ID" -> "the course ID"
 
--ABC2024JH001 –> BIT/BTech/CS/2023/0045 (for Btech)
+- ABC2024JH001 –> BIT/BTech/CS/2023/0045 (for Btech)
 
--ABC2024JH001 –> NIT/MTech/IS/2025/0011 (for Mtech)
+- ABC2024JH001 –> NIT/MTech/IS/2025/0011 (for Mtech)
 
--BC2024JH002  –> XLRI/BTech/CS/2024/0088 (For Btech)
+- BC2024JH002  –> XLRI/BTech/CS/2024/0088 (For Btech)
 
--ABC2024JH002 –> (designed to fail)
+- ABC2024JH002 –> (designed to fail)
 
 -------------------------------------------------------------------
 

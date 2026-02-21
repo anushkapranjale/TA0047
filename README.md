@@ -1,3 +1,8 @@
+/////
+this branch ("final") is *not* the main project branch and the main contents of the projects are on the branch "main"
+/////
+
+
 EduTrust — Employer Verification Portal:
 
 EduTrust is a demo web application that allows employers to verify student academic credentials and career history using ABC Student IDs.
